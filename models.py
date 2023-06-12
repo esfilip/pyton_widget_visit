@@ -1,10 +1,13 @@
 import datetime
 from typing import Any
-from sqlalchemy import ForeignKey, null
+from typing import Optional
 from sqlalchemy import Text
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.sql import func
 from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
+from datetime import datetime, date
+from sqlalchemy import ForeignKey, null
+from sqlalchemy.orm import  mapped_column
+from sqlalchemy.orm import DeclarativeBase
 
 class Base(DeclarativeBase):
     pass
@@ -24,9 +27,9 @@ class WidgetVisit(Base):
     widget_ref:	Mapped[str]
     request_url: Mapped[str] = mapped_column(Text)
     visits: Mapped[int] = mapped_column(default=0)
-    visits_date: Mapped[datetime.datetime]		
-    created_on: Mapped[datetime.datetime]		
-    updated_on: Mapped[datetime.datetime] = mapped_column(default=null)	
+    visits_date: Mapped[datetime]		
+    created_on: Mapped[Optional[datetime]] = mapped_column(default=null)
+    updated_on: Mapped[Optional[datetime]] = mapped_column(default=null)	
     status: Mapped[bool] = mapped_column(default=null)
 
     def __init__(self, owner_id, widget_type, widget_ref, request_url, visits_date):

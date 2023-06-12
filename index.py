@@ -1,15 +1,25 @@
+import sys
 import json
 
+from sqlalchemy import select
 from types import SimpleNamespace
-from datetime import datetime
+from sqlalchemy.orm import Session
+from datetime import date, datetime
+from sqlalchemy import create_engine
 
+from models import Base
 from models import WidgetVisit
+
+# engine = create_engine("sqlite://", echo=True)
+engine = create_engine("sqlite://")
+Base.metadata.create_all(engine)
 
 fileLocation = input('Please provide the file location: ')
 
 # FIXME:
 fileLocation = 'sample.json'
 # FIXME:
+
 
 # There is an inconsistency in the docs for the open function. https://docs.python.org/3/library/functions.html#open
 # open() takes a second argument, mode. There are two different parameters marked as default :)
@@ -51,7 +61,19 @@ for data in file:
     logs.append(widgetVisit)
 
 # Why do I have to use logs.append for appending elements but len(logs) to get the length of the list :(
-print(logs[0])
+# print(logs[0])
+
+
+with Session(engine) as session:
+    session.add_all(logs)
+    session.commit()
+
+session = Session(engine)
+stmt = select(WidgetVisit).where(WidgetVisit.widget_ref.in_(["d66cc4b5bbd5cd8025cdb2b183"]))
+
+# for widgetVisit in session.scalars(stmt):
+#     print(widgetVisit)
+#     break
 
 # Write a command line app with a file name as parameter. Read json objects from the file, and convert them to a DTO. Process this later and write it in the database.
 
